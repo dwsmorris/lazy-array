@@ -1,7 +1,7 @@
 'use strict';
 
 (function(define) {
-    define(function () {
+    define(["underscore"], function (_) {
         /**
          * Function that wraps the given generator function. Will be executed upon
          * .fn().
@@ -205,6 +205,20 @@
             });
         }
 
+        function zip(/*lists*/) {
+        	var lists = _.toArray(arguments);
+
+        	return create(function () {
+        		var heads = _.map(lists, first);
+
+        		if (heads.indexOf(undefined) !== -1) {
+        			return [];
+        		} else {
+        			return cons(heads, zip.apply(null, _.map(lists, rest)));
+        		}
+        	});
+        }
+
         /**
          * Filters out values that do not pass a predicate function.
          *
@@ -265,7 +279,8 @@
             last: last,
             map: map,
             filter: filter,
-            reduce: reduce
+            reduce: reduce,
+			zip: zip
         };
     });
 }(typeof module === 'object' && typeof define !== 'function'
